@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lucky Color – Win ₱100,000!</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<canvas id="rain-canvas"></canvas>
+
+<div class="page-wrapper">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="logo">🍀 Lucky Color</div>
+    <div class="tagline">Win Your First ₱100,000 Pesos Now!</div>
+  </div>
+
+  <!-- Sign-up Card -->
+  <div class="card">
+    <h2>Create Account</h2>
+
+    <form id="signup-form" novalidate autocomplete="off">
+      <div class="form-group">
+        <label for="full-name">Full Name</label>
+        <input type="text" id="full-name" name="full-name"
+               placeholder="e.g. Juan dela Cruz" required />
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Mobile Number</label>
+        <input type="tel" id="phone" name="phone"
+               placeholder="e.g. 09171234567" required />
+      </div>
+
+      <div id="signup-msg" class="msg"></div>
+
+      <button type="submit" class="btn btn-primary mt-2">
+        📲 Send Verification Code
+      </button>
+    </form>
+
+    <hr class="divider" />
+
+    <p class="text-center small">
+      Already registered?
+      <a href="game.html" style="color:var(--gold);">Play Now →</a>
+    </p>
+  </div>
+
+  <div class="nav-links">
+    <a href="game.html"  class="btn btn-secondary">🎮 Play Game</a>
+    <a href="admin.html" class="btn btn-secondary">🔐 Admin</a>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+<script>
+  const form   = document.getElementById('signup-form');
+  const msgEl  = document.getElementById('signup-msg');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    hideMsg(msgEl);
+
+    const name  = document.getElementById('full-name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+
+    if (!name) {
+      showMsg(msgEl, 'Please enter your full name.', 'error'); return;
+    }
+    if (!/^(09\d{9}|\+639\d{9})$/.test(phone)) {
+      showMsg(msgEl, 'Enter a valid PH mobile number (e.g. 09171234567).', 'error'); return;
+    }
+
+    // Check if phone already fully registered
+    const existing = findUserByPhone(phone);
+    if (existing && existing.verified) {
+      showMsg(msgEl, 'This number is already registered. You can play now!', 'info');
+      setTimeout(() => { window.location.href = 'game.html'; }, 1500);
+      return;
+    }
+
+    // Generate + "send" OTP (stored in sessionStorage; shown on next page)
+    const otp = generateOTP();
+    saveOTP(phone, otp);
+
+    // Persist pending user (not yet verified)
+    const users = getUsers();
+    const idx = users.findIndex(u => u.phone === normalizePhone(phone));
+    const record = {
+      id: idx >= 0 ? users[idx].id : Date.now(),
+      name,
+      phone: normalizePhone(phone),
+      verified: false,
+      registeredAt: new Date().toISOString(),
+      balance: 10000,
+    };
+    if (idx >= 0) users[idx] = record;
+    else users.push(record);
+    saveUsers(users);
+
+    // Pass name+phone to verify page
+    const params = new URLSearchParams({ phone: normalizePhone(phone), name });
+    window.location.href = 'verify.html?' + params.toString();
+  });
+</script>
+</body>
+</html>
