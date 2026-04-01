@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify Number – Lucky Color</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<canvas id="rain-canvas"></canvas>
+
+<div class="page-wrapper">
+
+  <div class="hero">
+    <div class="logo">🍀 Lucky Color</div>
+    <div class="tagline">Win Your First ₱100,000 Pesos Now!</div>
+  </div>
+
+  <div class="card">
+    <h2>📱 Verify Your Number</h2>
+
+    <p class="small text-center mt-1" id="phone-display">
+      A 6-digit code has been generated for your number.
+    </p>
+
+    <!-- The OTP code is shown here (simulating an SMS) -->
+    <div class="mt-2" style="text-align:center;">
+      <p class="small" style="color:#aaa; margin-bottom:.4rem;">Your verification code:</p>
+      <div class="otp-hint" id="otp-display">------</div>
+      <p class="otp-label">(In a real app this would be sent via SMS)</p>
+    </div>
+
+    <form id="verify-form" novalidate autocomplete="off">
+      <div class="form-group">
+        <label for="otp-input">Enter the 6-digit code above</label>
+        <input type="text" inputmode="numeric" pattern="[0-9]{6}" id="otp-input" name="otp"
+               placeholder="e.g. 382910" maxlength="6" required />
+      </div>
+
+      <div id="verify-msg" class="msg"></div>
+
+      <button type="submit" class="btn btn-primary mt-2">
+        ✅ Verify &amp; Play
+      </button>
+    </form>
+
+    <p class="text-center small mt-2">
+      Wrong number?
+      <a href="index.html" style="color:var(--gold);">← Go Back</a>
+    </p>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const phone  = params.get('phone') || '';
+  const name   = params.get('name')  || '';
+
+  // Show masked phone
+  const display = document.getElementById('phone-display');
+  if (phone) {
+    const masked = phone.slice(0, 4) + '***' + phone.slice(-3);
+    display.textContent = `Code sent to ${masked} (${name})`;
+  }
+
+  // Show the generated OTP (simulated SMS)
+  const otpDisplay = document.getElementById('otp-display');
+  try {
+    const stored = JSON.parse(sessionStorage.getItem('lucky_otp'));
+    if (stored && stored.phone === phone) {
+      otpDisplay.textContent = stored.code;
+    }
+  } catch (err) { console.error('Failed to load OTP:', err); }
+
+  const form  = document.getElementById('verify-form');
+  const msgEl = document.getElementById('verify-msg');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    hideMsg(msgEl);
+
+    const code = document.getElementById('otp-input').value.trim();
+
+    if (!verifyOTP(phone, code)) {
+      showMsg(msgEl, 'Invalid or expired code. Please check and try again.', 'error');
+      return;
+    }
+
+    // Mark user as verified
+    const users = getUsers();
+    const idx = users.findIndex(u => u.phone === phone);
+    if (idx >= 0) {
+      users[idx].verified = true;
+      users[idx].verifiedAt = new Date().toISOString();
+      saveUsers(users);
+    }
+
+    clearOTP();
+    showMsg(msgEl, '✅ Verified! Redirecting to the game…', 'success');
+
+    // Store logged-in user id in sessionStorage
+    if (idx >= 0) {
+      sessionStorage.setItem('lucky_user_id', users[idx].id);
+    }
+
+    setTimeout(() => { window.location.href = 'game.html'; }, 1200);
+  });
+</script>
+</body>
+</html>

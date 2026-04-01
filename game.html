@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Play – Lucky Color</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<canvas id="rain-canvas"></canvas>
+
+<div class="page-wrapper">
+
+  <div class="hero">
+    <div class="logo">🍀 Lucky Color</div>
+    <div class="tagline">Win Your First ₱100,000 Pesos Now!</div>
+  </div>
+
+  <div class="card" style="max-width:520px;">
+    <!-- Balance bar -->
+    <div class="balance-bar">
+      <span class="lbl">👤 <span id="player-name">—</span></span>
+      <span>
+        <span class="lbl">Balance: </span>
+        <span class="val" id="player-balance">₱0</span>
+      </span>
+    </div>
+
+    <h2 style="margin-bottom:.8rem;">Pick Your Lucky Color</h2>
+
+    <!-- Color buttons -->
+    <div id="color-grid" class="color-grid"></div>
+
+    <!-- Bet row -->
+    <div class="bet-row">
+      <label for="bet-amount">Bet (₱):</label>
+      <input type="number" id="bet-amount" value="100" min="10" step="10" />
+    </div>
+
+    <div id="game-msg" class="msg"></div>
+
+    <button id="spin-btn" type="button" class="btn btn-primary mt-1">
+      🎲 Spin!
+    </button>
+
+    <div id="result-box" class="result-box"></div>
+  </div>
+
+  <div class="nav-links">
+    <a href="index.html"  class="btn btn-secondary">🏠 Home</a>
+    <a href="admin.html"  class="btn btn-secondary">🔐 Admin</a>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

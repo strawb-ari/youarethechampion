@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin – Lucky Color</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* wider layout for the admin table */
+    .page-wrapper { align-items: stretch; }
+    .admin-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .admin-table td:nth-child(6) { white-space: nowrap; }
+    .overflow-x { overflow-x: auto; }
+  </style>
+</head>
+<body>
+
+<canvas id="rain-canvas"></canvas>
+
+<div class="page-wrapper">
+
+  <div class="hero admin-wrap">
+    <div class="logo">🍀 Lucky Color</div>
+    <div class="tagline">Win Your First ₱100,000 Pesos Now!</div>
+  </div>
+
+  <!-- ── Login ── -->
+  <div id="login-section" class="card" style="max-width:400px; margin:0 auto;">
+    <h2>🔐 Admin Login</h2>
+    <form id="login-form" novalidate>
+      <div class="form-group">
+        <label for="admin-pass">Admin Password</label>
+        <input type="password" id="admin-pass" placeholder="Enter password" required />
+      </div>
+      <div id="login-msg" class="msg"></div>
+      <button type="submit" class="btn btn-primary mt-2">Login</button>
+    </form>
+    <p class="text-center small mt-2">
+      <a href="index.html" style="color:var(--gold);">← Back to Home</a>
+    </p>
+  </div>
+
+  <!-- ── Panel ── -->
+  <div id="panel-section" style="display:none;" class="admin-wrap">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.2rem;">
+      <h2 style="color:var(--gold); font-size:1.4rem;">
+        Registered Users
+        <span style="font-size:.95rem; color:#aaa; font-weight:400;">
+          (<span id="user-count">0</span> total)
+        </span>
+      </h2>
+      <div style="display:flex; gap:.7rem;">
+        <button id="refresh-btn" class="btn btn-secondary" type="button">🔄 Refresh</button>
+        <button id="logout-btn"  class="btn btn-danger"    type="button">🚪 Logout</button>
+      </div>
+    </div>
+
+    <div class="overflow-x">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Balance</th>
+            <th>Registered</th>
+          </tr>
+        </thead>
+        <tbody id="users-tbody"></tbody>
+      </table>
+    </div>
+
+    <p class="text-center small mt-3">
+      <a href="index.html" style="color:var(--gold);">← Back to Home</a>
+    </p>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
